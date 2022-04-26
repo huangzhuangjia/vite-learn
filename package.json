@@ -1,0 +1,21 @@
+{
+  "name": "my-vite",
+  "version": "1.0.0",
+  "description": "vite learn demo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "junga",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "connect": "^3.7.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "esbuild": "^0.14.38",
+    "open": "^8.4.0",
+    "picocolors": "^1.0.0",
+    "sirv": "^2.0.2"
+  }
+}
