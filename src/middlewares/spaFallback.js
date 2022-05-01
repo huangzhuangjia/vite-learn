@@ -8,7 +8,6 @@ module.exports = function spaFallbackMiddleware(root) {
       {
         from: /\/$/,
         to({ parsedUrl }) {
-          console.log(parsedUrl);
           const rewritten =
             decodeURIComponent(parsedUrl.pathname) + 'index.html'
 

@@ -4,11 +4,18 @@ const open = require('open');
 const colors = require('picocolors');
 const chokidar = require('chokidar');
 
-const serveStaticMiddleware = require('../middlewares/static');
+
+const { resolveConfig } = require('./config');
+const { normalizePath } = require('../utils');
+const {
+  servePublicMiddleware, serveStaticMiddleware
+} = require('../middlewares/static');
 const indexHtmlMiddleware = require('../middlewares/indexHtml');
 const spaFallbackMiddleware = require('../middlewares/spaFallback');
 
-module.exports = async function createServer(config) {
+module.exports = async function createServer(inlineConfig) {
+  const config = await resolveConfig(inlineConfig);
+  console.log('config====>', config);
   const middlewares = connect();
   const { root, server: serverConfig } = config;
 
@@ -37,9 +44,13 @@ module.exports = async function createServer(config) {
   };
 
   watcher.on('change', (file) => {
+    file = normalizePath(file)
     console.log(file);
   });
 
+  if (config.publicDir) {
+    middlewares.use(servePublicMiddleware(config.publicDir))
+  }
   // 静态服务中间件
   middlewares.use(serveStaticMiddleware(root, server));
   // 单页面 fallback中间件

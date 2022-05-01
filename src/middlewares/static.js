@@ -13,8 +13,15 @@ const sirvOptions = {
   }
 }
 
-// 静态资源服务中间件
-module.exports = function serveStaticMiddleware(dir, server) {
+function servePublicMiddleware(publicDir) {
+  const serve = sirv(publicDir, sirvOptions);
+
+  return function _servePublicMiddleware(req, res, next) {
+    serve(req, res, next)
+  }
+}
+
+function serveStaticMiddleware(dir, server) {
   const serve = sirv(dir, sirvOptions);
 
   return function _serveStaticMiddleware(req, res, next) {
@@ -27,4 +34,9 @@ module.exports = function serveStaticMiddleware(dir, server) {
     }
     serve(req, res, next);
   }
+}
+
+module.exports = {
+  servePublicMiddleware,
+  serveStaticMiddleware
 }

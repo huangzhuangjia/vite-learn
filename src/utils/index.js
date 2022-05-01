@@ -16,7 +16,46 @@ function normalizePath(id) {
 
 const cleanUrl = (url) => url.replace(hashRE, '').replace(queryRE, '')
 
+function isObject(value) {
+  return Object.prototype.toString.call(value) === '[object Object]'
+}
+
+function arraify(target) {
+  return Array.isArray(target) ? target : [target]
+}
+
+function lookupFile(
+  dir,
+  formats,
+  options
+) {
+  for (const format of formats) {
+    const fullPath = path.join(dir, format)
+    if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+      return options?.pathOnly ? fullPath : fs.readFileSync(fullPath, 'utf-8')
+    }
+  }
+  const parentDir = path.dirname(dir)
+  if (
+    parentDir !== dir &&
+    (!options?.rootDir || parentDir.startsWith(options?.rootDir))
+  ) {
+    return lookupFile(parentDir, formats, options)
+  }
+}
+
+const usingDynamicImport = typeof jest === 'undefined'
+
+const dynamicImport = usingDynamicImport
+  ? new Function('file', 'return import(file)')
+  : require
+
 module.exports = {
   cleanUrl,
-  normalizePath
+  normalizePath,
+  isObject,
+  arraify,
+  lookupFile,
+  usingDynamicImport,
+  dynamicImport
 };
